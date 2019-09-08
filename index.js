@@ -10,6 +10,7 @@ morgan.token('body', function getId (req) {
   return JSON.stringify(req.body)
 })
 
+app.use(express.static('build'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body'))
