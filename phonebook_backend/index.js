@@ -1,6 +1,5 @@
 require('dotenv').config()
-
-const http = require('http')
+//const http = require('http')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -25,7 +24,7 @@ app.use(cors())
 app.use(logger(':method :url :status :response-time ms - :res[content-length] :body'))
 
 app.get('/', (request, response) => {
-    response.send('<h1>This is some nice Backend winkyface!</h1>')
+  response.send('<h1>This is some nice Backend winkyface!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
@@ -35,15 +34,15 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    var timestamp = new Date(); 
+  let timestamp = new Date()
 
-    Person.find({}).then(persons => { 
-      response.send('<p>Phonebook has info for '+persons.length+ ' people.</p><p>'+timestamp.toUTCString()+'</p>');
-    })
+  Person.find({}).then(persons => {
+    response.send('<p>Phonebook has info for '+persons.length+ ' people.</p><p>'+timestamp.toUTCString()+'</p>')
+  })
 
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -56,12 +55,13 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 
-
+/*
 const generateId = () => {
-  min = Math.ceil(1);
-  max = Math.floor(9999);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  let min = Math.ceil(1);
+  let max = Math.floor(9999);
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
+*/
 
 app.post('/api/persons', (request, response,next) => {
   const body = request.body
@@ -76,14 +76,14 @@ app.post('/api/persons', (request, response,next) => {
   })
 
   person.save()
-        .then(savedPerson => savedPerson.toJSON())
-        .then(formatedNote => {response.json(formatedNote);})
-        .catch(error => next(error));
+    .then(savedPerson => savedPerson.toJSON())
+    .then(formatedNote => {response.json(formatedNote)})
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -125,3 +125,4 @@ const errorHandler = (error, request, response, next) => {
 
 // handler of requests with result to errors
 app.use(errorHandler)
+
